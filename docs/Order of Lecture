@@ -1,0 +1,27 @@
+  - Overview of the app
+  - purpose is to illustrate background thread vs main display/ui thread
+  - Will fetch images from the animals app as example
+- Commit 1 version 1
+  - Examine the Animals api
+    - GET key
+    - POST the list of animal using the key
+   - Create new Android project called Animals App w/ empty activity
+    - Convert json response to model class in intellij project
+      - @Expose & @SerializedName
+        - they will be red
+        - add gson dependency
+        - import @Expose & @SerializedName
+      - @SerializedName
+        - serialization is converting object into json string and deserialization is converting json
+                  string into object
+        - @Expose is used to allow or disallow serialization and deserialization. @Expose is
+        optional and it has two configuration parameters: serialize and deserialize. By default
+        they're set to true. To serialize and deserialize with @Expose we create gson object like
+        this: Gson gsonBuilder = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+
+          - See Retriever class inside soon to be made ImageFragment
+            - a RESTful API will define one or more URL endpoints with a domain, port, path, and/or
+            querystring — for example, https://mydomain/user/123?format=json
+      - Create Taxonomy and Speed classes
+      -
+
