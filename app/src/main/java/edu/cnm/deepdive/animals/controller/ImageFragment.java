@@ -1,16 +1,16 @@
 package edu.cnm.deepdive.animals.controller;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import androidx.fragment.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import edu.cnm.deepdive.animals.R;
@@ -18,7 +18,6 @@ import edu.cnm.deepdive.animals.model.Animal;
 import edu.cnm.deepdive.animals.model.service.AnimalService;
 import java.io.IOException;
 import java.util.List;
-import java.util.Objects;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -55,13 +54,21 @@ public class ImageFragment extends Fragment {
     settings.setDisplayZoomControls(false);
     settings.setUseWideViewPort(true);
     settings.setLoadWithOverviewMode(true);
-    new Retriever().start();
+    new RetrieveImageTask().execute();
   }
 
-  private class Retriever extends Thread {
+  /**
+   * AsyncTask enables proper and easy * use of the UI thread. This class allows performing *
+   * background operations and publishing results * on the UI thread without having to manipulate *
+   * threads and/or handlers. An asynchronous task is * defined by a computation that runs on a *
+   * background thread and whose result is published on the * UI thread.
+   */
+  private class RetrieveImageTask extends AsyncTask<List<Animal>, Void, List<Animal>> {
 
-    @Override
-    public void run() {
+    AnimalService animalService;
+
+    protected void onPreExecute() {
+      super.onPreExecute();
       Gson gson = new GsonBuilder()
           .excludeFieldsWithoutExposeAnnotation()
           .create();
@@ -69,28 +76,30 @@ public class ImageFragment extends Fragment {
           .baseUrl("https://us-central1-apis-4674e.cloudfunctions.net")
           .addConverterFactory(GsonConverterFactory.create(gson))
           .build();
-      AnimalService animalService = retrofit.create(AnimalService.class);
+      animalService = retrofit.create(AnimalService.class);
+    }
 
+    @Override
+    protected List<Animal> doInBackground(List<Animal>... lists) {
+      List<Animal> animals = null;
       try {
         Response<List<Animal>> response = animalService
             .getAnimals("0c42474fa81fa47077bdee783fe9ce75f2536cd9").execute();
         if (response.isSuccessful()) {
-          List<Animal> animals = response.body();
-          assert animals != null;
-          String url = animals.get(29).getUrl();
-          Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-              contentView.loadUrl(url);
-            }
-          });
-        } else {
-          Log.e("AnimalService", response.message());
+          animals = response.body();
         }
       } catch (
           IOException e) {
         Log.e("AnimalService", e.getMessage(), e);
       }
+      return animals;
+    }
+
+    @Override
+    protected void onPostExecute(List<Animal> animals) {
+      super.onPostExecute(animals);
+      String url = animals.get(17).getUrl();
+      contentView.loadUrl(url);
     }
   }
 }

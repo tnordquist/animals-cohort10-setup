@@ -1,10 +1,39 @@
   - Overview of the app
   - purpose is to illustrate background thread vs main display/ui thread
   - Will fetch images from the animals app as example
-- Commit 1 version 1
+- version 1
   - Examine the Animals api
-    - GET key
-    - POST the list of animal using the key
+    - An interface is a description of actions that an object can do, it is a way to enforce actions
+    on an object that implements the interface.
+      - Application Programming Interface: the code that governs the access point(s) for the server.
+        - An API essentially talks to a program for you.
+        - When programmers decide to make some of their data available to the public, they “expose
+        endpoints,” meaning they publish a portion of the language they’ve used to build their
+        program.
+        - Other programmers can then pull data from the application by building URLs or using HTTP
+        clients (special programs that build the URLs for you) to request data from those endpoints.
+        - An API allows one program to request data from another
+      - We will be looking at a web based API.
+        - APIs consist of three parts:
+              - User: the person who makes a request
+              - Client: the computer that sends the request to the server
+              - Server: the computer that responds to the request
+        - Representational State Transfer (REST) style an Application can interact with resource by knowing only two
+                    things :
+            - Identifier of the resource
+            - Action to be performed on the resource
+            - REST, which provides web services based on URLs and HTTP: provides web services based
+            on URLs and HTTP.
+            - REST uses four different HTTP 1.1 verbs (GET, POST, PUT, and DELETE) to perform tasks
+            - a RESTful API will define one or more URL endpoints with a domain, port, path, and/or
+                    querystring — for example, https://mydomain/user/123?format=json
+            - Uniform interface: uniform interface between components.
+            - Resources are just concepts located by URIs. URIs tell client that there’s a concept
+            somewhere. Client then asks for specific representation of the concept from the
+            representations the server makes available: such as json format of text.
+            - animals base url: https://us-central1-apis-4674e.cloudfunctions.net
+            - GET key: https://us-central1-apis-4674e.cloudfunctions.net/getKey
+            - POST the list of animal: https://us-central1-apis-4674e.cloudfunctions.net/getAnimals
    - Create new Android project called Animals App w/ empty activity
     - Convert json response to model class in intellij project
       - @Expose & @SerializedName
@@ -18,10 +47,19 @@
         optional and it has two configuration parameters: serialize and deserialize. By default
         they're set to true. To serialize and deserialize with @Expose we create gson object like
         this: Gson gsonBuilder = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-
           - See Retriever class inside soon to be made ImageFragment
-            - a RESTful API will define one or more URL endpoints with a domain, port, path, and/or
-            querystring — for example, https://mydomain/user/123?format=json
-      - Create Taxonomy and Speed classes
-      -
+
+      - Model: internal state of the system: fields that belong to the object, methods that helpt to
+      get/set data from the object.
+        - Create Taxonomy and Speed classes
+      - Create the Service class: Methods to perform operations with one or more models.
+      - Create the ImageFragment:
+        - This Thread is code that violates a rule of Android development: the code within a
+        separate thread must never, under any circumstances,directly update any aspect of the user
+        interface.The first stage solution is to incorporate asynctask.
+  Version 2:
+    - AsyncTask enables proper and easy use of the UI thread. This class allows performing
+         background operations and publishing results on the UI thread without having to manipulate
+         threads and/or handlers. An asynchronous task is defined by a computation that runs on a
+         background thread and whose result is published on the UI thread.
 
