@@ -1,4 +1,4 @@
-package edu.cnm.deepdive.animals.model.service;
+package edu.cnm.deepdive.animals.service;
 
 import edu.cnm.deepdive.animals.model.Animal;
 import java.util.List;

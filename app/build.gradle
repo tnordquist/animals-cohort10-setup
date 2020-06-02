@@ -25,7 +25,6 @@ android {
         buildConfigField "String", "BASE_URL",
                 getProperty("$projectDir/../../../services/animals.properties", "base_url")
 
-
     }
 
     buildTypes {
