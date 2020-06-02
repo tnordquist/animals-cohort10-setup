@@ -13,6 +13,7 @@ import android.webkit.WebViewClient;
 import androidx.fragment.app.Fragment;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import edu.cnm.deepdive.animals.BuildConfig;
 import edu.cnm.deepdive.animals.R;
 import edu.cnm.deepdive.animals.model.Animal;
 import edu.cnm.deepdive.animals.model.service.AnimalService;
@@ -73,7 +74,7 @@ public class ImageFragment extends Fragment {
           .excludeFieldsWithoutExposeAnnotation()
           .create();
       Retrofit retrofit = new Retrofit.Builder()
-          .baseUrl("https://us-central1-apis-4674e.cloudfunctions.net")
+          .baseUrl(BuildConfig.BASE_URL)
           .addConverterFactory(GsonConverterFactory.create(gson))
           .build();
       animalService = retrofit.create(AnimalService.class);
@@ -84,7 +85,7 @@ public class ImageFragment extends Fragment {
       List<Animal> animals = null;
       try {
         Response<List<Animal>> response = animalService
-            .getAnimals("0c42474fa81fa47077bdee783fe9ce75f2536cd9").execute();
+            .getAnimals(BuildConfig.CLIENT_KEY).execute();
         if (response.isSuccessful()) {
           animals = response.body();
         }
