@@ -7,11 +7,23 @@
   android:layout_height="match_parent"
   tools:context=".controller.ImageFragment">
 
+
+
   <WebView
     android:id="@+id/content_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent"/>
+    app:layout_constraintEnd_toEndOf="parent">
+
+    <Spinner
+      android:id="@+id/animals_spinner"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:background="@android:color/holo_purple"
+      android:backgroundTint="@color/colorBackground"
+      />
+
+  </WebView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
