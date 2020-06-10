@@ -1,3 +1,5 @@
 <resources>
   <string name="app_name">Animals</string>
+  <string name="landscape_mode">Landscape Mode</string>
+  <string name="portrait_mode">Portrait Mode</string>
 </resources>
