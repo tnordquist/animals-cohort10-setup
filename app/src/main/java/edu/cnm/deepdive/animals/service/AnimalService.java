@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import edu.cnm.deepdive.animals.BuildConfig;
 import edu.cnm.deepdive.animals.model.Animal;
-import edu.cnm.deepdive.animals.respository.AnimalRepository.InstanceHolder;
 import io.reactivex.Single;
 import java.util.List;
 import okhttp3.OkHttpClient;
