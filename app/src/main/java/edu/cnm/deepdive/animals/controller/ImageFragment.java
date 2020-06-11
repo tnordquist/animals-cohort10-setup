@@ -3,7 +3,6 @@ package edu.cnm.deepdive.animals.controller;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
@@ -14,7 +13,6 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
@@ -26,52 +24,76 @@ import edu.cnm.deepdive.animals.R;
 import edu.cnm.deepdive.animals.model.Animal;
 import edu.cnm.deepdive.animals.viewmodel.MainViewModel;
 import java.util.List;
-import java.util.Objects;
 
 public class ImageFragment extends Fragment implements OnItemSelectedListener {
 
   private ImageView imageView;
   private MainViewModel viewModel;
-  public Toolbar toolbar;
+
+  private Toolbar toolbar;
+
   private Spinner spinner;
   private List<Animal> animals;
+  private int selectedAnimal = -1;
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
     View root = inflater.inflate(R.layout.fragment_image, container, false);
     imageView = root.findViewById(R.id.image_view);
+
     toolbar = root.findViewById(R.id.toolbar);
     toolbar.setTitle(R.string.app_name);
+
     spinner = root.findViewById(R.id.animals_spinner);
     spinner.setOnItemSelectedListener(this);
+
     return root;
   }
 
   @Override
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
+    //noinspection ConstantConditions
     viewModel = new ViewModelProvider(getActivity())
         .get(MainViewModel.class);
-    viewModel.getAnimals().observe(getViewLifecycleOwner(), new Observer<List<Animal>>() {
-      @Override
-      public void onChanged(List<Animal> animals) {
-        ImageFragment.this.animals = animals;
-        ArrayAdapter<Animal> adapter = new ArrayAdapter<>(ImageFragment.this.getContext(),
-            R.layout.custom_spinner_item,
-            animals);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
+    viewModel.getAnimals().observe(getViewLifecycleOwner(), (animals) -> {
+      ArrayAdapter<Animal> adapter = new ArrayAdapter<>(
+          ImageFragment.this.getContext(), R.layout.custom_spinner_item, animals
+      );
+      adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+      spinner.setAdapter(adapter);
+      this.animals = animals;
+      if(selectedAnimal >= 0) {
+        updateSelection();
       }
     });
+
+    viewModel.getSelectedItem().observe(getViewLifecycleOwner(), (item) -> {
+
+      if (item != selectedAnimal) {
+        selectedAnimal = item;
+        if (animals != null) {
+          updateSelection();
+        }
+      }
+
+    });
+  }
+
+  private void updateSelection() {
+    spinner.setSelection(selectedAnimal);
+    Picasso.get().load(animals.get(selectedAnimal).getUrl()).into(imageView);
   }
 
   @Override
   public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long l) {
-    Picasso.get().load(animals.get(pos).getUrl()).into(imageView);
+    viewModel.select(pos);
   }
 
   @Override
   public void onNothingSelected(AdapterView<?> adapterView) {
+
   }
 }
+

@@ -1,58 +1,67 @@
 package edu.cnm.deepdive.animals.viewmodel;
 
 import android.app.Application;
+import android.os.AsyncTask;
+import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import edu.cnm.deepdive.animals.BuildConfig;
 import edu.cnm.deepdive.animals.model.Animal;
 import edu.cnm.deepdive.animals.service.AnimalService;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import java.io.IOException;
 import java.util.List;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
-/**
- * Architecture Components provides ViewModel helper class for the UI controller that is responsible
- * for preparing data for the UI. ViewModel objects are automatically retained during configuration
- * changes so that data they hold is immediately available to the next activity or fragment
- * instance.
- */
-@SuppressWarnings("ALL")
 public class MainViewModel extends AndroidViewModel {
 
   private MutableLiveData<List<Animal>> animals;
   private MutableLiveData<Throwable> throwable;
-  AnimalService animalService;
+  private MutableLiveData<Integer> selectedItem;
+  private AnimalService animalService;
 
   public MainViewModel(@NonNull Application application) {
     super(application);
     animalService = AnimalService.getInstance();
     animals = new MutableLiveData<>();
     throwable = new MutableLiveData<>();
+    selectedItem = new MutableLiveData<>();
     loadAnimals();
   }
 
   public LiveData<List<Animal>> getAnimals() {
     return animals;
   }
+
   public LiveData<Throwable> getThrowable() {
     return throwable;
   }
 
+  public LiveData<Integer> getSelectedItem() {
+    return selectedItem;
+  }
+
+  public void select(int index) {
+    selectedItem.setValue(index);
+  }
+
   private void loadAnimals() {
+
     animalService.getAnimals(BuildConfig.CLIENT_KEY)
         .subscribeOn(Schedulers.io())
-        .subscribe((new Consumer<List<Animal>>() {
-          @Override
-          public void accept(List<Animal> animals1) throws Exception {
-            MainViewModel.this.animals.postValue(animals1);
-          }
-        }), new Consumer<Throwable>() {
-          @Override
-          public void accept(Throwable throwable1) throws Exception {
-            MainViewModel.this.throwable.postValue(throwable1);
-          }
-        });
+        .subscribe(
+            (animals) -> {
+              this.animals.postValue(animals);
+              selectedItem.postValue(0);
+            },
+            (throwable) -> this.throwable.postValue(throwable));
   }
+
+
 }

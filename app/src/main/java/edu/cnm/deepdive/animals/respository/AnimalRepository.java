@@ -1,35 +1,22 @@
-package edu.cnm.deepdive.animals.service;
+package edu.cnm.deepdive.animals.respository;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import edu.cnm.deepdive.animals.BuildConfig;
-import edu.cnm.deepdive.animals.model.Animal;
-import edu.cnm.deepdive.animals.respository.AnimalRepository.InstanceHolder;
-import io.reactivex.Single;
-import java.util.List;
+import edu.cnm.deepdive.animals.service.AnimalService;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import okhttp3.logging.HttpLoggingInterceptor.Level;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.Field;
-import retrofit2.http.FormUrlEncoded;
-import retrofit2.http.POST;
 
-public interface AnimalService {
+public interface AnimalRepository {
 
-  static AnimalService getInstance() {
-    return InstanceHolder.INSTANCE;
-  }
-
-  @FormUrlEncoded
-  @POST("getAnimals")
-    Single<List<Animal>> getAnimals(@Field("key") String key);
 
   class InstanceHolder {
 
-    private static final AnimalService INSTANCE;
+//    public static final AnimalService INSTANCE = retrofit.create(AnimalService.class);;
 
     static {
       Gson gson = new GsonBuilder()
@@ -46,7 +33,7 @@ public interface AnimalService {
           .client(client)
           .baseUrl(BuildConfig.BASE_URL)
           .build();
-      INSTANCE = retrofit.create(AnimalService.class);
+//      INSTANCE = retrofit.create(AnimalService.class);
     }
   }
 
