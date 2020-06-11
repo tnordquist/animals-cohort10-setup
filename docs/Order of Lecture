@@ -63,3 +63,10 @@
          threads and/or handlers. An asynchronous task is defined by a computation that runs on a
          background thread and whose result is published on the UI thread.
 
+  Version 5: Convert to rxjava
+    - RxJava
+    - Singleton
+    - Single vs retrofit's call
+    - InstanceHolder
+    - HttpLoggingInterceptor interceptor
+
