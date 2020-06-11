@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 import edu.cnm.deepdive.animals.BuildConfig;
 import edu.cnm.deepdive.animals.model.Animal;
 import edu.cnm.deepdive.animals.service.AnimalService;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import java.util.List;
 
@@ -42,8 +43,16 @@ public class MainViewModel extends AndroidViewModel {
   private void loadAnimals() {
     animalService.getAnimals(BuildConfig.CLIENT_KEY)
         .subscribeOn(Schedulers.io())
-        .subscribe((animals1 -> this.animals.postValue(animals1)), throwable1 -> {
-          this.throwable.postValue(throwable1);
+        .subscribe((new Consumer<List<Animal>>() {
+          @Override
+          public void accept(List<Animal> animals1) throws Exception {
+            MainViewModel.this.animals.postValue(animals1);
+          }
+        }), new Consumer<Throwable>() {
+          @Override
+          public void accept(Throwable throwable1) throws Exception {
+            MainViewModel.this.throwable.postValue(throwable1);
+          }
         });
   }
 }
